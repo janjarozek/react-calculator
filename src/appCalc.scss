@@ -10,9 +10,27 @@ body {
 
 .calculator-grid {
     display: grid;
+    justify-content: center;
     margin-top: 2rem;
     grid-template-columns: repeat(4, 6rem);
     grid-template-rows: minmax(7rem, auto) repeat(5, 6rem);
+}
+
+.calculator-grid > button {
+    cursor: pointer;
+    font-size: 2.2em;
+    font-weight: bold;
+    // border: 1px solid white;
+    border: 0;
+    border-radius: .5rem;
+    margin: 2px;
+    background-color: hsla(200, 50%, 90%, .6);
+    // box-shadow: 5px, 5px, 5px, 5px, black;
+}
+
+.calculator-grid > button:focus,
+.calculator-grid > button:hover {
+    background-color: hsla(200, 50%, 90%, .8);
 }
 
 .span-two {
@@ -30,6 +48,9 @@ body {
     padding: .75rem;
     word-wrap: break-word;
     word-break: break-all;
+    border: 0;
+    margin: 2px;
+    border-radius: .5rem;
 }
 
 .output .previous-operand {
