@@ -19,21 +19,22 @@ const INITIAL_STATE = {
 
 function reducer(state = INITIAL_STATE, {type, payload}) {
   switch(type) {
-    case ACTIONS.ADD_DIGIT:
+    case ACTIONS.ADD_DIGIT: {
       if (payload.digit === '0' && state.currentOperand === '0') return state
       if (payload.digit === '.' && state.currentOperand != null && state.currentOperand.includes('.')) return state
       if (payload.digit !== '0' && state.currentOperand === '0')
       return {
         ...state,
-        currentOperand: payload.digit
+        currentOperand: payload.digit,
       }
       return {
         ...state,
         currentOperand: `${state.currentOperand || ""}${payload.digit}`
       }
-    case ACTIONS.CHOOSE_OPERATION:
-      if (state.previousOperand == null && state.currentOperand == null) return state
-      if (state.previousOperand == null) {
+    }
+    case ACTIONS.CHOOSE_OPERATION: {
+      if ((state.previousOperand == null || state.previousOperand === "") && state.currentOperand == null) return state
+      if (state.previousOperand == null || state.previousOperand === "") {
         return {
           ...state,
           operation: `${payload.operation}`,
@@ -49,27 +50,63 @@ function reducer(state = INITIAL_STATE, {type, payload}) {
       }
       return {
         ...state,
-        previousOperand: evaluate(state),
-        operation: payload.operation,
-        currentOperand: null
+        // previousOperand: evaluate(state),
+        operation: payload.operation
       }
-      case ACTIONS.EVALUATE:
-        if (state.operation != null && state.previousOperand != null && state.currentOperand != null) {
+    }
+    case ACTIONS.EVALUATE: {
+      if (state.operation === null || state.operation === undefined) {
+        if(state.currentOperand === null) return state
+        if (state.previousOperand === "" || (state.currentOperand !== null || state.currentOperand !== undefined || state.currentOperand !== "")) {
+          return {
+            ...state,
+            previousOperand: state.currentOperand
+          }
+        } return state
+      } else {
+        if (state.previousOperand !== null && state.currentOperand !== null) {
           return {
             ...state,
             previousOperand: evaluate(state),
             operation: null,
             currentOperand: null
+          }
         }
       }
-    case ACTIONS.CLEAR:
-      return {}
-      // return {
-      //   ...state,
-      //   currentOperand: '0',
-      //   previousOperand: '',
-      //   operation: null
+
+      // if ((state.operation === null || state.operation === undefined) || (state.currentOperand === undefined || state.currentOperand === null || state.currentOperand === "0")) {
+      //   return {
+      //     ...state
+      //   }
       // }
+      // if (
+      //   (state.operation !== null && state.currentOperand !== null && state.previousOperand === undefined) ||
+      //   (state.operation !== null && state.previousOperand !== "" && state.currentOperand !== null && state.currentOperand !== undefined && state.currentOperand !== "")
+      //   ) {
+      //   return {
+      //     ...state,
+      //     previousOperand: state.currentOperand,
+      //     currentOperand: null
+      //   }
+      // }
+      // if (state.operation !== null && state.previousOperand !== null && state.currentOperand !== null) {
+      //   return {
+      //     ...state,
+      //     previousOperand: evaluate(state),
+      //     operation: null,
+      //     currentOperand: null
+      //   }
+      // }
+    }
+    case ACTIONS.CLEAR: {
+      // return {}
+      return {
+        ...state,
+        currentOperand: '0',
+        previousOperand: '',
+        operation: null
+      }
+    }
     case ACTIONS.DELETE_DIGIT: {
       if(state.currentOperand != null) {
         return {
@@ -79,7 +116,7 @@ function reducer(state = INITIAL_STATE, {type, payload}) {
       }
     }
     default:
-      return state;
+      return state
   }
 }
 
